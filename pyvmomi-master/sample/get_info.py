@@ -35,14 +35,14 @@ for vm in self._vmware_get_obj(content, [vim.VirtualMachine]):
             print("Error, cannot get vm metrics {0} for {1}".format("vmware_vm_total_disk_asigned", vm.name))
             pass
 
-        for p in perf_list:
-            p_metric = 'vmware_vm_' + p.replace('.', '_')
-            counter_key = counter_info[p]
-            metric_id = vim.PerformanceManager.MetricId(counterId=counter_key, instance='*')
-            spec = vim.PerformanceManager.QuerySpec(maxSample=1, entity=vm, metricId=[metric_id], intervalId=20)
-            result = content.perfManager.QueryStats(querySpec=[spec])
-            try:
-                self.metrics[p_metric].add_metric([vm.name], round((float(sum(result[0].value[0].value))), 2))
-            except:
-                print("Error, cannot get vm metrics {0} for {1}".format(p_metric, vm.name))
-                pass
+
+    for vm in self._vmware_get_obj(content, [vim.VirtualMachine]):
+        summary = vm.summary
+        power_state = 1 if summary.runtime.powerState == 'poweredOn' else 0
+        #vm_metrics['vmware_vm_power_state'].add_metric([vm.name], power_state)
+
+        # Get metrics for poweredOn vms only
+        if power_state:
+            #Agregado Por Mi
+            vmware_vm_memory_granted = summary.config.memorySizeMB
+            vmware_vm_cpu_quantity = summary.config.numCpu
