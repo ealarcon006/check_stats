@@ -1,0 +1,11 @@
+default:
+    vmware_user: 'nagios'
+    vmware_password: 'nrpe2017'
+    ignore_ssl: True
+    esx:
+      - '10.3.3.231'
+      - '10.3.3.232'
+ #   vc:
+ #     - '10.5.5.169'
+
+
